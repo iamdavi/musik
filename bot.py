@@ -16,11 +16,11 @@ async def on_message(message):
         return
 
     brooklyn_99_quotes = [
-        'I\'m the human form of the emoji.',
-        'Bingpot!',
+        'hI\'m the human form of the emoji.',
+        'hBingpot!',
         (
-            'Cool. Cool cool cool cool cool cool cool, '
-            'no doubt no doubt no doubt no doubt.'
+            'hCool. Cool cool cool cool cool cool cool, '
+            'hno doubt no doubt no doubt no doubt.'
         ),
     ]
 
