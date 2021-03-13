@@ -68,6 +68,7 @@ async def stop(ctx):
 
 #     if message.content == '99!':
 #         response = random.choice(random_messages)
-#         await message.channel.send(response)
+#         await message.channel.send(response) 
+# Ian
 
 client.run(TOKEN)
