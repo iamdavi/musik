@@ -31,6 +31,7 @@ async def play(ctx, url = str):
 
 @client.command()
 async def leave(ctx):
+    """ Funcion para cancelar una canción """
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     if voice.is_connected():
         await voice.disconnect()
