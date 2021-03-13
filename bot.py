@@ -15,6 +15,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 @client.command()
 async def play(ctx, url = str):
+    """ Funcion para ejecutar una canción """
     song_there = os.path.isfile("song.mp3")
     try:
         if song_there:
