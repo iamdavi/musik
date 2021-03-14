@@ -14,6 +14,10 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 @client.command()
+async def hola(ctx, texto):
+	await ctx.send(texto)
+
+@client.command()
 async def play(ctx, url = str):
     song_there = os.path.isfile("song.mp3")
     try:
@@ -22,7 +26,7 @@ async def play(ctx, url = str):
     except PermissionError:
         await ctx.send("Espera a que la pista actual finalice o usa el comando '!stop'")
         return
-
+    
     voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='Global')
     await voiceChannel.connect()
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
