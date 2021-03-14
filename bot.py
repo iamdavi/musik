@@ -1,21 +1,20 @@
 # bot.py
 import os
 
-# import discord
+import discord
 import random
 import youtube_dl
 from dotenv import load_dotenv
 from discord.ext import commands
 
 # Establecemos que el prefijo de los comandos para este BOT sea "$"
-client = commands.Bot(command_prefix="!")
+client = commands.Bot(command_prefix="$")
 # Obtenemos el token de seguridad
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 @client.command()
 async def play(ctx, url = str):
-    """ Funcion para ejecutar una canción """
     song_there = os.path.isfile("song.mp3")
     try:
         if song_there:
@@ -25,20 +24,34 @@ async def play(ctx, url = str):
         return
 
     voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='Global')
+    await voiceChannel.connect()
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-    if not voice.is_connected():
-        await voiceChannel.connect()
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download(['https://www.youtube.com/watch?v=o6ePFP5-DyM'])
+    for file in os.listdir("./"):
+        if file.endswith(".mp3"):
+            os.rename(file, "song.mp3")
+    voice.play(discord.FFmpegPCMAudio("song.mp3"))
 
 @client.command()
 async def leave(ctx):
-    """ Funcion para cancelar una canción """
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     if voice.is_connected():
         await voice.disconnect()
     else:
         await ctx.send("El bot no está conectado a ningún chat de voz")
 
-@client.comment()
+@client.command()
 async def pause(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     if voice.is_playing():
@@ -46,7 +59,7 @@ async def pause(ctx):
     else:
         await ctx.send("El audio no está en reproducción")
 
-@client.comment()
+@client.command()
 async def resume(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     if voice.is_paused():
@@ -54,7 +67,7 @@ async def resume(ctx):
     else:
         await ctx.send("El audio no está pausado")
 
-@client.comment()
+@client.command()
 async def stop(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     voice.stop()
@@ -71,6 +84,5 @@ async def stop(ctx):
 #     if message.content == '99!':
 #         response = random.choice(random_messages)
 #         await message.channel.send(response) 
-# Ian
 
 client.run(TOKEN)
