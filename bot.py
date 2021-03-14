@@ -14,11 +14,16 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 @client.command()
-async def hola(ctx, texto):
-	await ctx.send(texto)
+async def hola(ctx):
+	usuario = ctx.message.author.name
+	await ctx.send("Hola "+usuario)
 
 @client.command()
-async def play(ctx, url = str):
+async def prueba(ctx):
+	await ctx.send("No implementado")
+
+@client.command()
+async def play(ctx, url):
     song_there = os.path.isfile("song.mp3")
     try:
         if song_there:
@@ -26,8 +31,9 @@ async def play(ctx, url = str):
     except PermissionError:
         await ctx.send("Espera a que la pista actual finalice o usa el comando '!stop'")
         return
-    
-    voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='Global')
+
+    channel =  ctx.message.author.voice.channel
+    voiceChannel = discord.utils.get(ctx.guild.voice_channels, name=str(channel))
     await voiceChannel.connect()
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
 
@@ -41,7 +47,7 @@ async def play(ctx, url = str):
     }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download(['https://www.youtube.com/watch?v=o6ePFP5-DyM'])
+        ydl.download([str(url)])
     for file in os.listdir("./"):
         if file.endswith(".mp3"):
             os.rename(file, "song.mp3")
